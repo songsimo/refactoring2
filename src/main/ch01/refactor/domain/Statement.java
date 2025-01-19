@@ -45,41 +45,13 @@ public class Statement {
     private int totalVolumeCredits() {
         int result = 0;
         for(Performance perf: invoice.performances()) {
-            result += volumeCreditsFor(perf);
+            result += new PerformanceCalculator(perf, playFor(perf)).volumeCreditsFor();
         }
         return result;
     }
 
-    private int volumeCreditsFor(Performance aPerformance) {
-        int volumeCredits = 0;
-
-        volumeCredits += Math.max(aPerformance.audience() - 30, 0);
-        if("comedy".equals(playFor(aPerformance).type())) volumeCredits += (int) Math.floor((double) aPerformance.audience() / 5);
-
-        return volumeCredits;
-    }
-
     private int amountFor(Performance perf) throws Exception {
-        int thisAmount = 0;  // 변수를 초기화하는 코드
-        switch(playFor(perf).type()) {
-            case "tragedy": // 비극
-                thisAmount = 40000;
-                if(perf.audience() > 30) {
-                    thisAmount += 1000 * (perf.audience() - 30);
-                }
-                break;
-            case "comedy": // 희극
-                thisAmount = 30000;
-                if(perf.audience() > 20) {
-                    thisAmount += 10000 + 500 * (perf.audience() - 20);
-                }
-                thisAmount += 300 * perf.audience();
-                break;
-            default:
-                throw new Exception(String.format("알 수 없는 장르: %s", playFor(perf).type()));
-        }
-
-        return thisAmount;
+        return new PerformanceCalculator(perf, playFor(perf)).amount();
     }
 
     private Play playFor(Performance aPerformance) {
