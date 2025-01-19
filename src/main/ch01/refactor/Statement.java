@@ -19,18 +19,15 @@ public class Statement {
         int totalAmount = 0;
         int volumeCredits = 0;
         String result = String.format("청구 내역 (고객명: %s)\n", invoice.customer());
-        NumberFormat numberFormat = NumberFormat.getCurrencyInstance(Locale.US);
-        numberFormat.setMaximumFractionDigits(2);
-
         for(Performance perf: invoice.performances()) {
             volumeCredits += volumeCreditsFor(perf);
 
             // 청구 내역을 출력한다.
-            result += String.format("  %s: %s (%d석)\n", playFor(perf).name(), numberFormat.format(amountFor(perf)/100), perf.audience());
+            result += String.format("  %s: %s (%d석)\n", playFor(perf).name(), usd(amountFor(perf)), perf.audience());
             totalAmount += amountFor(perf);
         }
 
-        result += String.format("총액: %s\n", numberFormat.format(totalAmount/100));
+        result += String.format("총액: %s\n", usd(totalAmount));
         result += String.format("적립 포인트: %d점\n", volumeCredits);
 
         return result;
@@ -45,7 +42,6 @@ public class Statement {
         return volumeCredits;
     }
 
-    // 값이 바뀌지 않는 변수는 매개변수로 전달
     private int amountFor(Performance perf) throws Exception {
         int thisAmount = 0;  // 변수를 초기화하는 코드
         switch(playFor(perf).type()) {
@@ -71,5 +67,12 @@ public class Statement {
 
     private Play playFor(Performance aPerformance) {
         return plays.getPlayById(aPerformance.playID());
+    }
+
+    private String usd(long aNumber) {
+        NumberFormat numberFormat = NumberFormat.getCurrencyInstance(Locale.US);
+        numberFormat.setMaximumFractionDigits(2);
+
+        return numberFormat.format(aNumber / 100);
     }
 }
