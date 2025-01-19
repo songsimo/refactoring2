@@ -23,12 +23,7 @@ public class Statement {
         numberFormat.setMaximumFractionDigits(2);
 
         for(Performance perf: invoice.performances()) {
-            Play play = playFor(perf);
-
-            // 포인트를 적립한다.
-            volumeCredits += Math.max(perf.audience() - 30, 0);
-            // 희극 관객 5명마다 추가 포인트를 제공한다.
-            if("comedy".equals(play.type())) volumeCredits += (int) Math.floor((double) perf.audience() / 5);
+            volumeCredits += volumeCreditsFor(perf);
 
             // 청구 내역을 출력한다.
             result += String.format("  %s: %s (%d석)\n", playFor(perf).name(), numberFormat.format(amountFor(perf)/100), perf.audience());
@@ -39,6 +34,15 @@ public class Statement {
         result += String.format("적립 포인트: %d점\n", volumeCredits);
 
         return result;
+    }
+
+    private int volumeCreditsFor(Performance aPerformance) {
+        int volumeCredits = 0;
+
+        volumeCredits += Math.max(aPerformance.audience() - 30, 0);
+        if("comedy".equals(playFor(aPerformance).type())) volumeCredits += (int) Math.floor((double) aPerformance.audience() / 5);
+
+        return volumeCredits;
     }
 
     // 값이 바뀌지 않는 변수는 매개변수로 전달
