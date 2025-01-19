@@ -41,7 +41,7 @@ class StatementTest {
 
     @Test
     void statment() throws Exception {
-        Statement statement = new Statement(plays);
+        Statement statement = new Statement(invoice, plays);
 
         String result = statement.statement(invoice);
 

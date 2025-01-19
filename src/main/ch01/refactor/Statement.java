@@ -9,28 +9,36 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 public class Statement {
+    private final Invoice invoice;
     private final Plays plays;
 
-    public Statement(Plays plays) {
+    public Statement(Invoice invoice, Plays plays) {
+        this.invoice = invoice;
         this.plays = plays;
     }
 
     public String statement(Invoice invoice) throws Exception {
         int totalAmount = 0;
-        int volumeCredits = 0;
         String result = String.format("청구 내역 (고객명: %s)\n", invoice.customer());
-        for(Performance perf: invoice.performances()) {
-            volumeCredits += volumeCreditsFor(perf);
 
+        for(Performance perf: invoice.performances()) {
             // 청구 내역을 출력한다.
             result += String.format("  %s: %s (%d석)\n", playFor(perf).name(), usd(amountFor(perf)), perf.audience());
             totalAmount += amountFor(perf);
         }
 
         result += String.format("총액: %s\n", usd(totalAmount));
-        result += String.format("적립 포인트: %d점\n", volumeCredits);
+        result += String.format("적립 포인트: %d점\n", totalVolumeCredits());
 
         return result;
+    }
+
+    private int totalVolumeCredits() {
+        int volumeCredits = 0;
+        for(Performance perf: invoice.performances()) {
+            volumeCredits += volumeCreditsFor(perf);
+        }
+        return volumeCredits;
     }
 
     private int volumeCreditsFor(Performance aPerformance) {
