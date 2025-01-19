@@ -9,6 +9,12 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 public class Statement {
+    private final Plays plays;
+
+    public Statement(Plays plays) {
+        this.plays = plays;
+    }
+
     public String statement(Invoice invoice, Plays plays) throws Exception {
         int totalAmount = 0;
         int volumeCredits = 0;
@@ -17,8 +23,7 @@ public class Statement {
         numberFormat.setMaximumFractionDigits(2);
 
         for(Performance perf: invoice.performances()) {
-            Play play = plays.getPlayById(perf.playID());
-            int thisAmount = amountFor(perf, play);
+            Play play = playFor(perf);
 
             // 포인트를 적립한다.
             volumeCredits += Math.max(perf.audience() - 30, 0);
@@ -26,8 +31,8 @@ public class Statement {
             if("comedy".equals(play.type())) volumeCredits += (int) Math.floor((double) perf.audience() / 5);
 
             // 청구 내역을 출력한다.
-            result += String.format("  %s: %s (%d석)\n", play.name(), numberFormat.format(thisAmount/100), perf.audience());
-            totalAmount += thisAmount;
+            result += String.format("  %s: %s (%d석)\n", playFor(perf).name(), numberFormat.format(amountFor(perf)/100), perf.audience());
+            totalAmount += amountFor(perf);
         }
 
         result += String.format("총액: %s\n", numberFormat.format(totalAmount/100));
@@ -37,9 +42,9 @@ public class Statement {
     }
 
     // 값이 바뀌지 않는 변수는 매개변수로 전달
-    private int amountFor(Performance perf, Play play) throws Exception {
+    private int amountFor(Performance perf) throws Exception {
         int thisAmount = 0;  // 변수를 초기화하는 코드
-        switch(play.type()) {
+        switch(playFor(perf).type()) {
             case "tragedy": // 비극
                 thisAmount = 40000;
                 if(perf.audience() > 30) {
@@ -54,9 +59,13 @@ public class Statement {
                 thisAmount += 300 * perf.audience();
                 break;
             default:
-                throw new Exception(String.format("알 수 없는 장르: %s", play.type()));
+                throw new Exception(String.format("알 수 없는 장르: %s", playFor(perf).type()));
         }
 
         return thisAmount;
+    }
+
+    private Play playFor(Performance aPerformance) {
+        return plays.getPlayById(aPerformance.playID());
     }
 }
