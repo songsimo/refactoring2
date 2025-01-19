@@ -18,27 +18,33 @@ public class Statement {
     }
 
     public String statement(Invoice invoice) throws Exception {
-        int totalAmount = 0;
         String result = String.format("청구 내역 (고객명: %s)\n", invoice.customer());
-
         for(Performance perf: invoice.performances()) {
             // 청구 내역을 출력한다.
             result += String.format("  %s: %s (%d석)\n", playFor(perf).name(), usd(amountFor(perf)), perf.audience());
-            totalAmount += amountFor(perf);
         }
 
-        result += String.format("총액: %s\n", usd(totalAmount));
+        result += String.format("총액: %s\n", usd(totalAmount()));
         result += String.format("적립 포인트: %d점\n", totalVolumeCredits());
 
         return result;
     }
 
-    private int totalVolumeCredits() {
-        int volumeCredits = 0;
+    private int totalAmount() throws Exception {
+        int result = 0;
         for(Performance perf: invoice.performances()) {
-            volumeCredits += volumeCreditsFor(perf);
+            result += amountFor(perf);
         }
-        return volumeCredits;
+
+        return result;
+    }
+
+    private int totalVolumeCredits() {
+        int result = 0;
+        for(Performance perf: invoice.performances()) {
+            result += volumeCreditsFor(perf);
+        }
+        return result;
     }
 
     private int volumeCreditsFor(Performance aPerformance) {
