@@ -1,7 +1,7 @@
 package ch01.before;
 
-import ch01.dto.Invoice;
-import ch01.dto.Plays;
+import ch01.before.entity.Invoice;
+import ch01.before.entity.Plays;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

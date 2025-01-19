@@ -1,12 +1,10 @@
-package ch01.refactor;
+package ch01.refactor.domain;
 
-import ch01.dto.Invoice;
-import ch01.dto.Performance;
-import ch01.dto.Play;
-import ch01.dto.Plays;
+import ch01.refactor.dto.PlayData;
+import ch01.refactor.dto.StatementData;
 
-import java.text.NumberFormat;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Statement {
     private final Invoice invoice;
@@ -17,17 +15,22 @@ public class Statement {
         this.plays = plays;
     }
 
-    public String statement(Invoice invoice) throws Exception {
-        String result = String.format("청구 내역 (고객명: %s)\n", invoice.customer());
+    public StatementData statement() throws Exception {
+        return new StatementData(invoice.customer(), getPlay(), totalAmount(), totalVolumeCredits());
+    }
+
+    private List<PlayData> getPlay() throws Exception {
+        List<PlayData> playDataList = new ArrayList<>();
+
         for(Performance perf: invoice.performances()) {
-            // 청구 내역을 출력한다.
-            result += String.format("  %s: %s (%d석)\n", playFor(perf).name(), usd(amountFor(perf)), perf.audience());
+            String name = playFor(perf).name();
+            int amount = amountFor(perf);
+            int seats = perf.audience();
+
+            playDataList.add(new PlayData(name, amount, seats));
         }
 
-        result += String.format("총액: %s\n", usd(totalAmount()));
-        result += String.format("적립 포인트: %d점\n", totalVolumeCredits());
-
-        return result;
+        return playDataList;
     }
 
     private int totalAmount() throws Exception {
@@ -81,12 +84,5 @@ public class Statement {
 
     private Play playFor(Performance aPerformance) {
         return plays.getPlayById(aPerformance.playID());
-    }
-
-    private String usd(long aNumber) {
-        NumberFormat numberFormat = NumberFormat.getCurrencyInstance(Locale.US);
-        numberFormat.setMaximumFractionDigits(2);
-
-        return numberFormat.format(aNumber / 100);
     }
 }

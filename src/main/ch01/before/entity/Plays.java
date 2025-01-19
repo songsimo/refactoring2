@@ -1,4 +1,4 @@
-package ch01.dto;
+package ch01.before.entity;
 
 import java.util.Map;
 

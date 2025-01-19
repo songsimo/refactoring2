@@ -1,9 +1,9 @@
 package ch01.before;
 
-import ch01.dto.Invoice;
-import ch01.dto.Performance;
-import ch01.dto.Play;
-import ch01.dto.Plays;
+import ch01.before.entity.Invoice;
+import ch01.before.entity.Performance;
+import ch01.before.entity.Play;
+import ch01.before.entity.Plays;
 
 import java.text.NumberFormat;
 import java.util.Locale;

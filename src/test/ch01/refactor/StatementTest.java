@@ -1,7 +1,10 @@
 package ch01.refactor;
 
-import ch01.dto.Invoice;
-import ch01.dto.Plays;
+import ch01.refactor.domain.Invoice;
+import ch01.refactor.domain.Plays;
+import ch01.refactor.domain.Statement;
+import ch01.refactor.dto.PlayData;
+import ch01.refactor.dto.StatementData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -9,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,8 +47,14 @@ class StatementTest {
     void statment() throws Exception {
         Statement statement = new Statement(invoice, plays);
 
-        String result = statement.statement(invoice);
+        StatementData result = statement.statement();
+        List<PlayData> playData = List.of(
+                new PlayData("Hamlet", 65000, 55),
+                new PlayData("As You Like It", 58000, 35),
+                new PlayData("Othello", 50000, 40)
+                );
+        StatementData expectedData = new StatementData("BigCo", playData,173000, 47);
 
-        assertThat(result).isEqualTo(EXPECTED_INVOICE_MESSAGE);
+        assertThat(result).isEqualTo(expectedData);
     }
 }

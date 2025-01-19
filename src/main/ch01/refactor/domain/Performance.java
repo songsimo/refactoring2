@@ -1,4 +1,4 @@
-package ch01.dto;
+package ch01.refactor.domain;
 
 public record Performance(
         String playID,
