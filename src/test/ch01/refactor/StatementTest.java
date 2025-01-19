@@ -1,6 +1,5 @@
 package ch01.refactor;
 
-import ch01.before.Statement;
 import ch01.dto.Invoice;
 import ch01.dto.Plays;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,9 +41,9 @@ class StatementTest {
 
     @Test
     void statment() throws Exception {
-        Statement statement = new Statement();
+        Statement statement = new Statement(plays);
 
-        String result = statement.statement(invoice, plays);
+        String result = statement.statement(invoice);
 
         assertThat(result).isEqualTo(EXPECTED_INVOICE_MESSAGE);
     }

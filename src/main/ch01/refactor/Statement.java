@@ -15,7 +15,7 @@ public class Statement {
         this.plays = plays;
     }
 
-    public String statement(Invoice invoice, Plays plays) throws Exception {
+    public String statement(Invoice invoice) throws Exception {
         int totalAmount = 0;
         int volumeCredits = 0;
         String result = String.format("청구 내역 (고객명: %s)\n", invoice.customer());
