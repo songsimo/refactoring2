@@ -1,14 +1,17 @@
-package before;
+package ch01.before;
 
+import ch01.CommonConst;
+import ch01.dto.Invoice;
+import ch01.dto.Plays;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dto.Invoice;
-import dto.Plays;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class StatementTest {
     private static Invoice invoice;
@@ -37,6 +40,6 @@ class StatementTest {
 
         String result = statement.statement(invoice, plays);
 
-        System.out.println(result);
+        assertThat(result).isEqualTo(CommonConst.EXPECTED_INVOICE_MESSAGE);
     }
 }

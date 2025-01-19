@@ -1,9 +1,9 @@
-package before;
+package ch01.refactor;
 
-import dto.Invoice;
-import dto.Performance;
-import dto.Play;
-import dto.Plays;
+import ch01.dto.Invoice;
+import ch01.dto.Performance;
+import ch01.dto.Play;
+import ch01.dto.Plays;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -18,25 +18,7 @@ public class Statement {
 
         for(Performance perf: invoice.performances()) {
             Play play = plays.getPlayById(perf.playID());
-            int thisAmount = 0;
-
-            switch(play.type()) {
-                case "tragedy": // 비극
-                    thisAmount = 40000;
-                    if(perf.audience() > 30) {
-                        thisAmount += 1000 * (perf.audience() - 30);
-                    }
-                    break;
-                case "comedy": // 희극
-                    thisAmount = 30000;
-                    if(perf.audience() > 20) {
-                        thisAmount += 10000 + 500 * (perf.audience() - 20);
-                    }
-                    thisAmount += 300 * perf.audience();
-                    break;
-                default:
-                    throw new Exception(String.format("알 수 없는 장르: %s", play.type()));
-            }
+            int thisAmount = amountFor(perf, play);
 
             // 포인트를 적립한다.
             volumeCredits += Math.max(perf.audience() - 30, 0);
@@ -49,8 +31,32 @@ public class Statement {
         }
 
         result += String.format("총액: %s\n", numberFormat.format(totalAmount/100));
-        result += String.format("적립 포인트:: %d점\n", volumeCredits);
+        result += String.format("적립 포인트: %d점\n", volumeCredits);
 
         return result;
+    }
+
+    // 값이 바뀌지 않는 변수는 매개변수로 전달
+    private int amountFor(Performance perf, Play play) throws Exception {
+        int thisAmount = 0;  // 변수를 초기화하는 코드
+        switch(play.type()) {
+            case "tragedy": // 비극
+                thisAmount = 40000;
+                if(perf.audience() > 30) {
+                    thisAmount += 1000 * (perf.audience() - 30);
+                }
+                break;
+            case "comedy": // 희극
+                thisAmount = 30000;
+                if(perf.audience() > 20) {
+                    thisAmount += 10000 + 500 * (perf.audience() - 20);
+                }
+                thisAmount += 300 * perf.audience();
+                break;
+            default:
+                throw new Exception(String.format("알 수 없는 장르: %s", play.type()));
+        }
+
+        return thisAmount;
     }
 }

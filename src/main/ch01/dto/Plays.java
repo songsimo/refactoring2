@@ -1,4 +1,4 @@
-package dto;
+package ch01.dto;
 
 import java.util.Map;
 
