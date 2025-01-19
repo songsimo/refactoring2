@@ -49,11 +49,11 @@ class StatementTest {
 
         StatementData result = statement.statement();
         List<PlayData> playData = List.of(
-                new PlayData("Hamlet", 65000, 55),
-                new PlayData("As You Like It", 58000, 35),
-                new PlayData("Othello", 50000, 40)
+                new PlayData("Hamlet", 65_000, 55),
+                new PlayData("As You Like It", 58_000, 35),
+                new PlayData("Othello", 50_000, 40)
                 );
-        StatementData expectedData = new StatementData("BigCo", playData,173000, 47);
+        StatementData expectedData = new StatementData("BigCo", playData,173_000, 47);
 
         assertThat(result).isEqualTo(expectedData);
     }

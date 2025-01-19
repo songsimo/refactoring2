@@ -1,5 +1,7 @@
 package ch01.refactor.domain;
 
+import ch01.refactor.domain.calculator.CalculatorFactory;
+import ch01.refactor.domain.calculator.PerformanceCalculator;
 import ch01.refactor.dto.PlayData;
 import ch01.refactor.dto.StatementData;
 
@@ -45,13 +47,14 @@ public class Statement {
     private int totalVolumeCredits() {
         int result = 0;
         for(Performance perf: invoice.performances()) {
-            result += new PerformanceCalculator(perf, playFor(perf)).volumeCreditsFor();
+            PerformanceCalculator calculator = CalculatorFactory.createPerformanceCalculator(perf, playFor(perf));
+            result += calculator.volumeCredits();
         }
         return result;
     }
 
     private int amountFor(Performance perf) throws Exception {
-        return new PerformanceCalculator(perf, playFor(perf)).amount();
+        return CalculatorFactory.createPerformanceCalculator(perf, playFor(perf)).amount();
     }
 
     private Play playFor(Performance aPerformance) {
