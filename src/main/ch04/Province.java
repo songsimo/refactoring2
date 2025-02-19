@@ -1,5 +1,6 @@
 package ch04;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Province {
@@ -9,17 +10,18 @@ public class Province {
     private int demand;
     private int price;
 
-    public Province(String name, List<Producer> producers, int totalProduction, int demand, int price) {
-        this.name = name;
-        this.producers = producers;
-        this.totalProduction = totalProduction;
-        this.demand = demand;
-        this.price = price;
+    public Province(ProvinceDTO provinceDTO) {
+        this.name = provinceDTO.name();
+        this.producers = new ArrayList<>();
+        this.totalProduction = 0;
+        this.demand = provinceDTO.demand();
+        this.price = provinceDTO.price();
+        provinceDTO.producers().forEach(this::addProducer);
     }
 
-    private void addProducer(Producer producer) {
-        this.producers.add(producer);
-        this.totalProduction += producer.getProduction();
+    private void addProducer(ProducerDTO producer) {
+        this.producers.add(new Producer(this, producer.toProducer()));
+        this.totalProduction += producer.production();
     }
 
     public void addTotalProduction(int totalProduction) {
@@ -42,9 +44,9 @@ public class Province {
         int result = 0;
 
         for(Producer producer : producerList) {
-            int constribution = Math.min(remainingDemand, producer.getProduction());
-            remainingDemand -= constribution;
-            result += constribution * producer.getCost();
+            int contribution = Math.min(remainingDemand, producer.getProduction());
+            remainingDemand -= contribution;
+            result += contribution * producer.getCost();
         }
 
         return result;
@@ -88,5 +90,9 @@ public class Province {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public void setProduction(final int idx, final int production) {
+        this.producers.get(idx).setProduction(production);
     }
 }
